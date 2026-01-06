@@ -74,6 +74,7 @@
     <select id="algorithm">
         <option value="caesar">Caesar Cipher</option>
         <option value="vigenere">Vigenère Cipher</option>
+        <option value="railfence">Rail Fence Cipher</option>
     </select>
 
     <label>Enter Key</label>
@@ -97,6 +98,8 @@
             result = caesarCipher(text, parseInt(key));
         } else if (algorithm === "vigenere") {
             result = vigenereCipher(text, key);
+        } else if (algorithm === "railfence") {
+            result = railFenceCipher(text,parseInt(key))
         }
 
         document.getElementById("output").innerText = result;
@@ -146,6 +149,21 @@
             }
         }
         return encrypted;
+    }
+
+    function railFenceCipher(text,rails) {
+        if(isNaN(rails) || rails < 2) return "Key must be a number >=2 for rail fence cipher.";
+        let fence = Array.from({length: rails}, () => []);
+        let rail = 0;
+        let direction = 1;
+        for(let char of text) {
+            fence[rail].push(char);
+            rail += direction;
+            if(rail === 0 || rail === rails-1){
+                direction *= -1;
+            }
+        }
+        return fence.flat().join("")
     }
 </script>
 
