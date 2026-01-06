@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Encryption Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: hsl(210, 7%, 34%);
+            display: flex;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #877f7f;
+            padding: 40px;
+            width: 480px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgb(2, 2, 2);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        label {
+            font-weight: bold;
+        }
+        textarea, select, input {
+            width: 100%;
+            margin: 8px 0 15px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #393939;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #000000;
+        }
+        .output {
+            margin-top: 30px;
+            background: #eef2f5;
+            padding: 10px;
+            border-radius: 4px;
+            color:rgb(2, 2, 2);
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Text Encryption Tool</h2>
+
+    <label>Enter Plain Text</label>
+    <textarea id="plaintext" rows="4"></textarea>
+
+    <label>Select Algorithm</label>
+    <select id="algorithm">
+        <option value="caesar">Caesar Cipher</option>
+        <option value="vigenere">Vigenère Cipher</option>
+    </select>
+
+    <label>Enter Key</label>
+    <input type="text" id="key" placeholder="Shift / Keyword">
+
+    <button onclick="encryptText()">Encrypt</button>
+
+    <label>Encrypted Output</label>
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+    function encryptText() {
+        const text = document.getElementById("plaintext").value;
+        const algorithm = document.getElementById("algorithm").value;
+        const key = document.getElementById("key").value;
+
+        let result = "";
+
+        if (algorithm === "caesar") {
+            result = caesarCipher(text, parseInt(key));
+        } else if (algorithm === "vigenere") {
+            result = vigenereCipher(text, key);
+        }
+
+        document.getElementById("output").innerText = result;
+    }
+
+    function caesarCipher(text, shift) {
+        if (isNaN(shift)) return "Invalid key for Caesar Cipher";
+
+        let encrypted = "";
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+
+            if (char.match(/[a-z]/i)) {
+                let code = text.charCodeAt(i);
+
+                if (code >= 65 && code <= 90) {
+                    char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+                } else if (code >= 97 && code <= 122) {
+                    char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+                }
+            }
+            encrypted += char;
+        }
+        return encrypted;
+    }
+
+    function vigenereCipher(text, key) {
+        if (!key) return "Key required for Vigenère Cipher";
+
+        let encrypted = "";
+        key = key.toLowerCase();
+        let keyIndex = 0;
+
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+
+            if (char.match(/[a-z]/i)) {
+                let isUpper = char === char.toUpperCase();
+                let textCode = char.toLowerCase().charCodeAt(0) - 97;
+                let keyCode = key[keyIndex % key.length].charCodeAt(0) - 97;
+                let newChar = (textCode + keyCode) % 26;
+
+                encrypted += String.fromCharCode(newChar + (isUpper ? 65 : 97));
+                keyIndex++;
+            } else {
+                encrypted += char;
+            }
+        }
+        return encrypted;
+    }
+</script>
+
+</body>
+</html>
