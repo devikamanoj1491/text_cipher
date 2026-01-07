@@ -78,15 +78,38 @@
     </select>
 
     <label>Enter Key</label>
-    <input type="text" id="key" placeholder="Shift / Keyword">
+<input type="number" id="key" placeholder="Enter numeric key">
 
     <button onclick="encryptText()">Encrypt</button>
+    <button onclick="decryptText()">Decrypt</button>
 
     <label>Encrypted Output</label>
     <div class="output" id="output"></div>
 </div>
 
 <script>
+    document.getElementById("algorithm").addEventListener("change", autoSwitchKey);
+
+function autoSwitchKey() {
+    const algo = document.getElementById("algorithm").value;
+    const keyInput = document.getElementById("key");
+
+    keyInput.value = ""; // clear previous key
+
+    if (algo === "vigenere") {
+        keyInput.type = "text";
+        keyInput.placeholder = "Enter keyword (letters only)";
+    } else if (algo === "caesar") {
+        keyInput.type = "number";
+        keyInput.placeholder = "Enter shift value";
+        keyInput.min = "0";
+    } else if (algo === "railfence") {
+        keyInput.type = "number";
+        keyInput.placeholder = "Enter number of rails (≥ 2)";
+        keyInput.min = "2";
+    }
+}
+
     function encryptText() {
         const text = document.getElementById("plaintext").value;
         const algorithm = document.getElementById("algorithm").value;
@@ -102,6 +125,21 @@
             result = railFenceCipher(text,parseInt(key))
         }
 
+        document.getElementById("output").innerText = result;
+    }
+
+    function decryptText(){
+        const text = document.getElementById("plaintext").value;
+        const algorithm = document.getElementById("algorithm").value;
+        const key = document.getElementById("key").value;
+        let result = "";
+        if(algorithm === "caesar"){
+            result = caesarCipher(text,-parseInt(key));
+        } else if(algorithm === "vigenere"){
+            result = vigenereDecrypt(text,key);
+        } else if(algorithm === "railfence"){
+            result = railFenceDecrypt(text,parseInt(key));
+        }
         document.getElementById("output").innerText = result;
     }
 
@@ -151,6 +189,35 @@
         return encrypted;
     }
 
+    function vigenereDecrypt(text, key) {
+if (!key) return "Key required for Vigenère Cipher";
+
+
+let decrypted = "";
+key = key.toLowerCase();
+let keyIndex = 0;
+
+
+for (let i = 0; i < text.length; i++) {
+let char = text[i];
+
+
+if (char.match(/[a-z]/i)) {
+let isUpper = char === char.toUpperCase();
+let textCode = char.toLowerCase().charCodeAt(0) - 97;
+let keyCode = key[keyIndex % key.length].charCodeAt(0) - 97;
+let newChar = (textCode - keyCode + 26) % 26;
+
+
+decrypted += String.fromCharCode(newChar + (isUpper ? 65 : 97));
+keyIndex++;
+} else {
+decrypted += char;
+}
+}
+return decrypted;
+}
+
     function railFenceCipher(text,rails) {
         if(isNaN(rails) || rails < 2) return "Key must be a number >=2 for rail fence cipher.";
         let fence = Array.from({length: rails}, () => []);
@@ -165,6 +232,47 @@
         }
         return fence.flat().join("")
     }
+
+    function railFenceDecrypt(cipher, rails) {
+if (isNaN(rails) || rails < 2) {
+return "Key must be a number ≥ 2 for Rail Fence Cipher";
+}
+
+
+let fence = Array.from({ length: rails }, () => Array(cipher.length).fill(null));
+let rail = 0;
+let direction = 1;
+
+
+for (let i = 0; i < cipher.length; i++) {
+fence[rail][i] = '*';
+rail += direction;
+if (rail === 0 || rail === rails - 1) direction *= -1;
+}
+
+
+let index = 0;
+for (let r = 0; r < rails; r++) {
+for (let c = 0; c < cipher.length; c++) {
+if (fence[r][c] === '*' && index < cipher.length) {
+fence[r][c] = cipher[index++];
+}
+}
+}
+
+
+let result = '';
+rail = 0;
+direction = 1;
+for (let i = 0; i < cipher.length; i++) {
+result += fence[rail][i];
+rail += direction;
+if (rail === 0 || rail === rails - 1) direction *= -1;
+}
+
+
+return result;
+}
 </script>
 
 </body>

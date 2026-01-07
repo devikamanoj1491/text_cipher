@@ -1,29 +1,51 @@
 # Text Encryption Web Application
 
-This project is a web-based application that encrypts user-provided text using classical cryptographic algorithms.
+A simple web-based cybersecurity project that demonstrates classical encryption and decryption algorithms using HTML, CSS, and JavaScript.
 
-## Objective
-To understand and implement classical encryption techniques and demonstrate the concept of confidentiality in cybersecurity.
+This project allows users to enter text, select an encryption algorithm, provide a key, and either encrypt or decrypt the text accordingly.
 
-## Features
-- Encrypts plaintext using Caesar Cipher and Vigenère Cipher
+---
+
+## 🔐 Supported Algorithms
+
+### 1. Caesar Cipher
+- A substitution cipher that shifts characters by a fixed number.
+- Encryption and decryption are performed using modular arithmetic.
+- Key: Numeric shift value.
+
+### 2. Vigenère Cipher
+- A polyalphabetic substitution cipher that uses a keyword.
+- Each character is shifted based on the corresponding character in the key.
+- Key: Alphabetic keyword.
+
+### 3. Rail Fence Cipher
+- A transposition cipher that rearranges characters in a zig-zag pattern.
+- Encryption writes characters diagonally across rails.
+- Decryption reconstructs the zig-zag pattern to retrieve original text.
+- Key: Number of rails (≥ 2).
+
+---
+
+## ⚙️ Features
+
+- Encrypt and decrypt text using multiple algorithms
+- Auto-switching key input type based on selected algorithm
+- Case-sensitive encryption
 - User-friendly web interface
-- Dynamic algorithm selection
-- Educational demonstration of classical cryptography
+- Input validation for keys
 
-## Technologies Used
+---
+
+## 🛠️ Technologies Used
+
 - HTML
 - CSS
-- JavaScript
+- JavaScript (Vanilla)
 
-## Algorithms Implemented
-- Caesar Cipher
-- Vigenère Cipher
+---
 
-## Future Enhancements
-- Rail Fence Cipher
-- Decryption functionality
-- Modern encryption algorithms (AES, RSA)
+## ▶️ How to Run the Project
 
-## Disclaimer
-This project is intended for educational purposes only and should not be used for secure communication.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/devikamanoj1491/text_cipher.git
